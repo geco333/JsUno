@@ -2,9 +2,9 @@ import * as Player from './modules/player.js';
 import * as Table from './modules/table.js';
 import * as View from './modules/view.js';
 
-let cards: number = 8;
-let player: Player;
-let opponent: Player;
+let cards = 8;
+let player;
+let opponent;
 
 let players = [
   new Player.Player(0),
@@ -18,9 +18,9 @@ players.forEach((player, i) => {
 });
 
 View.setupTable(cards);
-View.renderOpponent(Table.players[0].hand);
+View.renderPlayer(0, Table.players[0].hand);
 View.renderPiles();
-View.renderPlayer(Table.players[1].hand);
+View.renderPlayer(1, Table.players[1].hand);
 
 // Export to global namespace.
 window.Table = Table;

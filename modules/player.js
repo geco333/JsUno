@@ -1,12 +1,11 @@
 import * as Table from './table.js';
 import * as View from './view.js';
 
-export function Player(number: number) {
-  this.View: View = view;
-  this.hand: array = [];
-  this.number: number = number;
+export function Player(number) {
+  this.hand = [];
+  this.number = number;
 
-  this.getCards = function(cards: number) {
+  this.getCards = function(cards) {
     for (let i = 0; i < cards; i++) {
       this.hand[i] = Table.drawPile.pop();
     }

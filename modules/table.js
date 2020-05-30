@@ -1,17 +1,19 @@
+import * as View from './view.js'
+
 function Card(color, number) {
     this.color = color;
     this.number = number;
 }
 
-export let drawPile: array = [];
-export let topCard: Card;
-export let players: array = [];
-export let currentPlayer: number = 0;
+export let drawPile = [];
+export let topCard;
+export let players = [];
+export let currentPlayer = 0;
 
 let colors = ['red', 'yellow', 'blue', 'green'];
 let wilds = ['plus_two', 'reverse', 'skip'];
 
-export function setupTable(cards: number, ...players) {
+export function setupTable(cards, ...players) {
     this.players.push(...players);
 
     setupDrawPile();
@@ -20,12 +22,13 @@ export function setupTable(cards: number, ...players) {
     topCard = drawPile.pop();
 }
 
-export function setTopCard(card: Card) {
+export function setTopCard(card) {
     topCard = card;
 }
 
 export function changePlayer() {
   currentPlayer = (currentPlayer + 1) % 2;
+  View.updateCurrentPlayer();
 }
 
 function setupDrawPile() {

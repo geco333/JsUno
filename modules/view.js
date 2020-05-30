@@ -1,30 +1,26 @@
 import * as Table from './table.js';
 
 let path = './uno_assets_2d/PNGs/small/';
-let $opponent;
-let $player;
+let $players = [];
 let $piles;
 let $drawPile;
 let $discardPile;
+let $currentPlayer
+let Cards;
 
-export function setupTable(cards: number) {
-  setupOpponent(cards);
+export function setupTable(cards) {
+  Cards = cards;
+
+  setupGUI();
+  setupPlayer(0);
   setupPiles();
   setupDrawPile();
   setupDiscardPile();
-  setupPlayer(cards);
+  setupPlayer(1);
 }
 
-export function renderOpponent(hand: array) {
-  $('#opponent').children().each(function(i) {
-    let card = path + hand[i].color + '_' + hand[i].number + '.png';
-
-    $(this).attr('src', card);
-  })
-}
-
-export function renderPlayer(hand: array) {
-  $('#player').children().each(function(i) {
+export function renderPlayer(i, hand) {
+  $('#player_' + i).children().each(function(i) {
     let card = path + hand[i].color + '_' + hand[i].number + '.png';
 
     $(this).attr('src', card);
@@ -38,22 +34,28 @@ export function renderPiles() {
     '_' +
     Table.topCard.number +
     '.png';
-  let onClickDrawPile = (() => {
-    let card = Table.drawPile.pop();
-
-    if(Table.currentPlayer == 0) {
-      ///////////
-    }
-  });
 
   $drawPile.attr('src', cardBack)
-  $drawPile.click(onClickDrawPile);
 
   $discardPile.attr('src', topCard)
 }
 
 export function removeCard(img) {
   $(img).remove();
+}
+
+function setupGUI() {
+  $currentPlayer = $('<span>');
+  $currentPlayer.attr('id', 'currentPlayer');
+  $currentPlayer.attr('class', 'currentPlayer');
+
+  $('body').append($currentPlayer);
+
+  updateCurrentPlayer();
+}
+
+function updateCurrentPlayer() {
+  $currentPlayer.text(Table.currentPlayer);
 }
 
 function setupDiscardPile() {
@@ -69,7 +71,28 @@ function setupDrawPile() {
   $drawPile.attr('id', 'drawPile');
   $drawPile.attr('class', 'card');
 
+  $drawPile.click(onClickDrawPile);
   $('#piles').append($drawPile);
+}
+
+function onClickDrawPile() {
+  let card = Table.drawPile.pop();
+
+  if (card != undefined) {
+    Table.players[Table.currentPlayer].hand.push(card);
+
+    let $img = $('<img>');
+    let player = Table.players[0];
+    let onClickCard = player.onClickCard.bind(player, $opponent);
+
+    $img.attr('class', 'card');
+    $img.click(onClickCard);
+
+    $opponent.append($img);
+    renderOpponent(Table.players[0].hand);
+
+    Table.changePlayer();
+  }
 }
 
 function setupPiles() {
@@ -79,38 +102,24 @@ function setupPiles() {
   $('body').append($piles);
 }
 
-function setupPlayer(cards: number) {
-  $player = $('<div>');
-  $player.attr('id', 'player');
+function setupPlayer(playerIndex) {
+  $players[playerIndex] = $('<div>');
+  $players[playerIndex].attr('id', 'player_' + playerIndex);
 
-  for (let i = 0; i < cards; i++) {
-    let $card = $('<img>');
+  for (let i = 0; i < Cards; i++) {
+    let $img = $('<img>');
     let player = Table.players[1];
-    let onClickCard = player.onClickCard.bind(player, $player);
+    let onClickCard = player.onClickCard.bind(player, $players[playerIndex]);
 
-    $card.attr('class', 'card');
-    $card.click(onClickCard);
+    $img.attr('class', 'card');
+    $img.click(onClickCard);
 
-    $player.append($card);
+    $players[playerIndex].append($img);
   }
 
-  $('body').append($player);
+  $('body').append($players[playerIndex]);
 }
 
-function setupOpponent(cards: number) {
-  $opponent = $('<div>');
-  $opponent.attr('id', 'opponent');
-
-  for (let i = 0; i < cards; i++) {
-    let $card = $('<img>');
-    let opponent = Table.players[0];
-    let onClickCard = opponent.onClickCard.bind(opponent, $opponent);
-
-    $card.attr('class', 'card');
-    $card.click(onClickCard);
-
-    $opponent.append($card);
-  }
-
-  $('body').append($opponent);
+function addCardImg($player) {
+  $player
 }
